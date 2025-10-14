@@ -1,0 +1,384 @@
+<!-- examples/zono-playground.html -->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Zono.js Playground</title>
+    <style>
+        :root {
+            --bg: #0f1724;
+            --card: #0b1220;
+            --muted: #94a3b8;
+            --accent: #2EE7C5;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-2: rgba(255, 255, 255, 0.02);
+            --radius: 12px;
+            color-scheme: dark;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            margin: 0;
+            background: linear-gradient(180deg, var(--bg) 0%, #071024 100%);
+            color: #e6eef6;
+            min-height: 100vh;
+            padding: 28px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #17324A, #0b5566);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 6px 20px rgba(2, 6, 23, 0.6)
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 20px
+        }
+
+        p.lead {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+            align-items: start
+        }
+
+        .card {
+            background: linear-gradient(180deg, var(--card), #071022);
+            padding: 16px;
+            border-radius: var(--radius);
+            box-shadow: 0 6px 30px rgba(2, 6, 23, 0.6)
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 6px
+        }
+
+        select,
+        input,
+        button {
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 8px 10px;
+            border-radius: 8px;
+            color: inherit;
+            font-size: 14px
+        }
+
+        input[type="datetime-local"] {
+            width: 100%
+        }
+
+        button {
+            cursor: pointer
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        .big {
+            font-size: 18px;
+            font-weight: 600
+        }
+
+        pre {
+            background: var(--glass-2);
+            padding: 12px;
+            border-radius: 8px;
+            overflow: auto
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            align-items: center
+        }
+
+        .col {
+            display: flex;
+            flex-direction: column
+        }
+
+        .footer {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        /* responsive */
+        @media (max-width:920px) {
+            main {
+                grid-template-columns: 1fr;
+                padding-bottom: 40px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">Z</div>
+        <div>
+            <h1>Zono.js — Interactive Playground</h1>
+            <p class="lead">Test formatting, timezones, relative & calendar time. Works with the local
+                <code>dist/zono.umd.min.js</code> build.</p>
+        </div>
+    </header>
+
+    <main>
+        <!-- Left: main playground -->
+        <section class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <div>
+                    <div class="muted">Live clock (selected timezone)</div>
+                    <div id="liveClock" class="big">--:--:--</div>
+                </div>
+                <div style="text-align:right">
+                    <div class="muted">Zono version</div>
+                    <div id="zonoVersion" class="big">--</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div style="flex:1">
+                    <label for="tzSelect">Timezone</label>
+                    <select id="tzSelect">
+                        <option>UTC</option>
+                        <option>Asia/Kolkata</option>
+                        <option>America/New_York</option>
+                        <option>Europe/London</option>
+                        <option>Australia/Sydney</option>
+                    </select>
+                </div>
+
+                <div style="width:200px">
+                    <label for="localeSelect">Locale</label>
+                    <select id="localeSelect">
+                        <option value="en">en (English)</option>
+                        <!-- add more locales if available -->
+                    </select>
+                </div>
+
+                <div style="width:180px">
+                    <label for="formatInput">Format (token)</label>
+                    <input id="formatInput" type="text" value="MMMM Do YYYY, h:mm:ss a" />
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+                <div>
+                    <label for="dateInput">Pick date & time (local)</label>
+                    <input id="dateInput" type="datetime-local" />
+                </div>
+                <div>
+                    <label>&nbsp;</label>
+                    <div class="row">
+                        <button id="formatBtn">Format Date</button>
+                        <button id="nowBtn">Use Now</button>
+                        <button id="convertBtn">Convert to TZ</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:12px">
+                <label>Formatted Output</label>
+                <pre id="formattedOutput">—</pre>
+            </div>
+
+            <div style="margin-bottom:12px;display:flex;gap:12px">
+                <div style="flex:1">
+                    <label>FromNow / Relative</label>
+                    <pre id="relativeOutput">—</pre>
+                </div>
+                <div style="flex:1">
+                    <label>Calendar</label>
+                    <pre id="calendarOutput">—</pre>
+                </div>
+            </div>
+
+            <div class="footer">
+                If Zono library is not loaded, ensure <code>dist/zono.umd.min.js</code> is available and the path in
+                this page points to it.
+            </div>
+        </section>
+
+        <!-- Right: quick references -->
+        <aside>
+            <div class="card">
+                <div class="muted">Common format tokens</div>
+                <pre>
+YYYY  - 2025
+MMMM  - October
+MMM   - Oct
+Do    - 14th (not implemented verbatim; use D)
+DD    - 14
+HH    - 00-23 hour
+hh    - 01-12 hour
+mm    - minutes
+ss    - seconds
+A/a   - AM/PM
+Z     - +05:30 offset
+      </pre>
+
+                <div style="margin-top:8px" class="muted">Quick actions</div>
+                <div style="display:flex;gap:8px;margin-top:8px">
+                    <button id="demoRelative">Demo: 2011-10-31 fromNow</button>
+                    <button id="demoCalendar">Demo: 10 days ago (calendar)</button>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:12px">
+                <div class="muted">Diagnostics</div>
+                <pre id="diag">Zono: checking...</pre>
+            </div>
+        </aside>
+    </main>
+
+    <!-- UMD build - relative path; update if needed -->
+    <script src="../dist/zono.umd.min.js"></script>
+    <script>
+        // Immediately run the UI logic
+        (function () {
+            const diag = document.getElementById('diag');
+            const verEl = document.getElementById('zonoVersion');
+            const liveClock = document.getElementById('liveClock');
+            const tzSelect = document.getElementById('tzSelect');
+            const localeSelect = document.getElementById('localeSelect');
+            const formatInput = document.getElementById('formatInput');
+            const dateInput = document.getElementById('dateInput');
+            const formattedOutput = document.getElementById('formattedOutput');
+            const relativeOutput = document.getElementById('relativeOutput');
+            const calendarOutput = document.getElementById('calendarOutput');
+
+            // check Zono availability
+            const Z = window.Zono || (typeof require === 'function' ? require('../dist/zono.cjs.js') : null);
+            if (!Z) {
+                diag.textContent = 'Zono library not found. Make sure ../dist/zono.umd.min.js exists.';
+                verEl.textContent = 'n/a';
+                formattedOutput.textContent = 'Library missing — cannot format.';
+                return;
+            }
+            diag.textContent = 'Zono loaded ✓';
+            verEl.textContent = Z.version || '0.1.0';
+
+            // set default date input to now (in user's local time)
+            const nowLocal = new Date();
+            const isoLocal = new Date(nowLocal.getTime() - (nowLocal.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+            dateInput.value = isoLocal;
+
+            // live clock update
+            function updateClock() {
+                const tz = tzSelect.value || 'UTC';
+                const now = Z(null, { tz });
+                liveClock.textContent = now.format('HH:mm:ss Z');
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // format function
+            function doFormat(useNow = false) {
+                const tz = tzSelect.value || 'UTC';
+                const locale = localeSelect.value || 'en';
+                let z;
+                if (useNow) {
+                    z = Z.now(tz, locale);
+                } else {
+                    const val = dateInput.value;
+                    if (!val) {
+                        z = Z.now(tz, locale);
+                    } else {
+                        // convert local datetime-local string -> treat as wall clock in tz selection
+                        // create by reading components and using Z.tz()
+                        const dt = new Date(val);
+                        // Build string YYYY-MM-DD HH:mm:ss
+                        const Y = dt.getFullYear();
+                        const M = String(dt.getMonth() + 1).padStart(2, '0');
+                        const D = String(dt.getDate()).padStart(2, '0');
+                        const H = String(dt.getHours()).padStart(2, '0');
+                        const m = String(dt.getMinutes()).padStart(2, '0');
+                        const s = String(dt.getSeconds()).padStart(2, '0');
+                        const sStr = `${Y}-${M}-${D} ${H}:${m}:${s}`;
+                        z = Z.tz(sStr, tz, locale);
+                    }
+                }
+
+                // format tokens: support some Moment tokens; 'Do' not implemented -> replace with D + ordinal
+                let fmt = formatInput.value || 'YYYY-MM-DDTHH:mm:ssZ';
+                // custom small support for 'Do' to produce '14th' / '1st' / '2nd' etc.
+                if (fmt.includes('Do')) {
+                    const day = parseInt(z.format('D'), 10);
+                    const ord = (d => {
+                        const j = d % 10, k = d % 100;
+                        if (j === 1 && k !== 11) return d + 'st';
+                        if (j === 2 && k !== 12) return d + 'nd';
+                        if (j === 3 && k !== 13) return d + 'rd';
+                        return d + 'th';
+                    })(day);
+                    fmt = fmt.replace(/Do/g, ord);
+                }
+
+                formattedOutput.textContent = z.format(fmt);
+                relativeOutput.textContent = z.fromNow();
+                calendarOutput.textContent = z.calendar();
+            }
+
+            // wire buttons
+            document.getElementById('formatBtn').addEventListener('click', () => doFormat(false));
+            document.getElementById('nowBtn').addEventListener('click', () => doFormat(true));
+            document.getElementById('convertBtn').addEventListener('click', () => doFormat(false));
+            document.getElementById('demoRelative').addEventListener('click', () => {
+                const r = Z('2011-10-31').fromNow();
+                relativeOutput.textContent = r;
+            });
+            document.getElementById('demoCalendar').addEventListener('click', () => {
+                calendarOutput.textContent = Z().subtract(10, 'days').calendar();
+            });
+
+            // initial render
+            doFormat(true);
+
+        })();
+    </script>
+</body>
+
+</html>
